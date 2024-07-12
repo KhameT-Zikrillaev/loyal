@@ -232,28 +232,53 @@ const columns = [
    
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === '№'">
-          <span>{{ record.id }}</span>
+          <span>{{ record.index }}</span>
         </template>
 
-        <template v-else-if="column.dataIndex === 'name'">
-          <span>{{ record.name }}</span>
+        <template v-else-if="column.dataIndex === 'title_en / text_en'">
+          <div class="flexs">
+            <span>{{ record.title_en }}</span>
+            <span>{{ record.text_en }}</span>
+          </div>
         </template>
-        <template v-else-if="column.dataIndex === 'description'">
-          <span>{{ record.description }}</span>
+        <template v-else-if="column.dataIndex === 'title_ru / text_ru'">
+          <div class="flexs">
+            <span>{{ record.title_ru }}</span>
+            <span>{{ record.text_ru }}</span>
+          </div>
+        </template>
+        <template v-else-if="column.dataIndex === 'title_uz / text_uz'">
+          <div class="flexs">
+            <span>{{ record.title_uz }}</span>
+            <span>{{ record.text_uz }}</span>
+          </div>
+        </template>
+        <template v-else-if="column.dataIndex === 'title_tr / text_tr'">
+          <div class="flexs">
+            <span>{{ record.title_tr }}</span>
+            <span>{{ record.text_tr }}</span>
+          </div>
+        </template>
+        <template v-else-if="column.dataIndex === 'title_zh / text_zh'">
+          <div class="flexs">
+            <span>{{ record.title_zh }}</span>
+            <span>{{ record.text_zh }}</span>
+          </div>
+        </template>
+        <template  v-else-if="column.dataIndex === 'images'">
+          <img class="imagesWidth" :src="'https://api.dezinfeksiyatashkent.uz/api/uploads/images/' + record?.blog_images[0]?.image?.src" alt="" />
+
+        </template>
+        <template v-else-if="column.dataIndex === 'author'">
+          <span>{{ record.author }}</span>
         </template>
         <template v-else-if="column.dataIndex === 'action'">
           <div class="action-buttons">
             <a-button type="primary" @click="editProduct(record)">
               Edit
             </a-button>
-            <a-button
-              type="primary"
-              danger
-              style="margin-left: 15px"
-              @click="tovarid(record.id)"
-            >
+            <a-button type="primary" danger style="margin-left: 15px;" @click="tovarid(record.id)">
               Delete
-              
             </a-button>
           </div>
         </template>
