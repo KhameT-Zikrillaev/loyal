@@ -195,9 +195,9 @@ const columns = [
 
 
 
-      <template #bodyCell="{ column, record }">
+      <template #bodyCell="{ column, record,index}">
         <template  v-if="column.dataIndex === '№'">
-          <span>{{ record.id }}</span> 
+          <span>{{index + 1 }}</span> 
         </template>
         
         <template v-else-if="column.dataIndex === 'name'">

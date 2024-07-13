@@ -96,6 +96,9 @@ const inputtext_uz= ref("");
 const inputtext_tr =ref("")
 const inputtext_zh =ref("")
 const inputimages = ref("")
+function EditPictures(item){
+  inputimages.value = item
+}
 const data = ref(
   { 
     title_en:"",
@@ -114,7 +117,6 @@ const data = ref(
 
 const editProduct =(item) =>{
   editmodal(true)
- 
   idtovar.value = item.id,
   inputtitle_en.value = item.title_en,
   inputtext_en.value = item.text_en,
@@ -126,8 +128,8 @@ const editProduct =(item) =>{
   inputtext_tr.value = item.text_tr,
   inputtitle_zh.value = item.title_zh,
   inputtext_zh.value = item.text_zh,
-  inputimages.value = item.image_src
   onChange()
+  data.value.images = item.image_src
 }
 
 function onChange(){
@@ -157,7 +159,11 @@ const editChangeProduct = async ()=>{
   formData.append("text_tr", data.value.text_tr);
   formData.append("title_zh", data.value.title_zh);
   formData.append("text_zh", data.value.text_zh);
-  formData.append('images', data.value.images);
+  if(inputimages.value){
+  formData.append('images', inputimages.value)
+ }
+
+
   try {
     await axiosCustom.put(`services/${idtovar.value}`,formData, {
     });
@@ -267,9 +273,9 @@ const columns = [
         </template>
       </template>
 
-      <template #bodyCell="{ column, record }">
+      <template #bodyCell="{ column, record, index }">
         <template v-if="column.dataIndex === '№'">
-          <span>{{ record.index }}</span> 
+          <span>{{ index +1 }}</span>
         </template>
         
         <template v-else-if="column.dataIndex === 'title_en / text_en'">
@@ -418,7 +424,6 @@ const columns = [
         <a-input v-model:value="inputtext_tr" placeholder="Metin..." />
       </a-form-item>
       <!-- ~~~~~~~~~~~~~~~~~~~~~~~Images~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <h1>{{  data.images }}</h1>
       <a-form-item
        label="Upload News images"
       :rules="[{ required: true}]"
@@ -430,7 +435,7 @@ const columns = [
     <a-input 
     type="file"
     class="inputimg"
-     @input="imagePicture($event.target.files[0])" 
+     @input="EditPictures($event.target.files[0])" 
      accept="image/*"
      />
     </a-form-item>

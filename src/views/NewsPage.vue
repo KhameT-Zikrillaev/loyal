@@ -13,7 +13,7 @@ function addmodal(item) {
   modaladd.value = item;
 }
 const modaledit = ref(false);
-function editmodal(item){
+function editmodal(item) {
   modaledit.value = item
 }
 const modaldelete = ref(false);
@@ -39,15 +39,16 @@ const idtovar = ref("")
 const title_en = ref("");
 const title_ru = ref("");
 const title_uz = ref("");
-const title_tr =ref("");
+const title_tr = ref("");
 const title_zh = ref("");
 const text_en = ref("")
 const text_ru = ref("");
-const text_uz= ref("");
-const text_tr =ref("");
-const text_zh =ref("");
+const text_uz = ref("");
+const text_tr = ref("");
+const text_zh = ref("");
 const author = ref("")
 const imagerasm = ref("");
+
 function imagePicture(item) {
   imagerasm.value = item;
 }
@@ -90,68 +91,71 @@ const addProduct = async () => {
 const inputtitle_en = ref("");
 const inputtitle_ru = ref("");
 const inputtitle_uz = ref("");
-const inputtitle_tr =ref("");
+const inputtitle_tr = ref("");
 const inputtitle_zh = ref("");
 const inputtext_en = ref("")
 const inputtext_ru = ref("");
-const inputtext_uz= ref("");
-const inputtext_tr =ref("")
-const inputtext_zh =ref("")
+const inputtext_uz = ref("");
+const inputtext_tr = ref("")
+const inputtext_zh = ref("")
 const inputauthor = ref("")
-const inputimages = ref("")
+const imagerasm2 = ref("")
+function imagePicture2(item) {
+  imagerasm2.value = item;
+}
+
 const data = ref(
-  { 
-    title_en:"",
-    text_en:"",
-    title_ru:"",
-    text_ru:"",
-    title_uz:"",
-    text_uz:"",
-    title_tr:"",
-    text_tr:"",
-    title_zh:"",
-    text_zh:"",
-    author:"",
-    images:""
+  {
+    title_en: "",
+    text_en: "",
+    title_ru: "",
+    text_ru: "",
+    title_uz: "",
+    text_uz: "",
+    title_tr: "",
+    text_tr: "",
+    title_zh: "",
+    text_zh: "",
+    author: "",
+    images:null
   }
 );
 
-const editProduct =(item) =>{
+const editProduct = (item) => {
   editmodal(true)
- 
-  idtovar.value = item.id,
-  inputtitle_en.value = item.title_en,
-  inputtext_en.value = item.text_en,
-  inputtitle_ru.value = item.title_ru,
-  inputtext_ru.value = item.text_ru,
-  inputtitle_uz.value = item.title_uz,
-  inputtext_uz.value = item.text_uz,
-  inputtitle_tr.value = item.title_tr,
-  inputtext_tr.value = item.text_tr,
-  inputtitle_zh.value = item.title_zh,
-  inputtext_zh.value = item.text_zh,
-  inputauthor.value = item.author,
-  inputimages.value = item.news_images[0]['image.src']
+    idtovar.value = item.id,
+    inputtitle_en.value = item.title_en,
+    inputtext_en.value = item.text_en,
+    inputtitle_ru.value = item.title_ru,
+    inputtext_ru.value = item.text_ru,
+    inputtitle_uz.value = item.title_uz,
+    inputtext_uz.value = item.text_uz,
+    inputtitle_tr.value = item.title_tr,
+    inputtext_tr.value = item.text_tr,
+    inputtitle_zh.value = item.title_zh,
+    inputtext_zh.value = item.text_zh,
+    inputauthor.value = item.author,
   onChange()
+  data.value.images = item.news_images[0]['image.src']
 }
 
-function onChange(){
-   data.value.title_en = inputtitle_en.value,
-   data.value.text_en = inputtext_en.value,
-   data.value.title_ru = inputtitle_ru.value,
-   data.value.text_ru = inputtext_ru.value,
-   data.value.title_uz = inputtitle_uz.value,
-   data.value.text_uz = inputtext_uz.value,
-   data.value.title_tr = inputtitle_tr.value,
-   data.value.text_tr = inputtext_tr.value,
-   data.value.title_zh = inputtitle_zh.value,
-   data.value.text_zh = inputtext_zh.value,
-   data.value.author = inputauthor.value,
-   data.value.images = inputimages.value
+function onChange() {
+    data.value.title_en = inputtitle_en.value,
+    data.value.text_en = inputtext_en.value,
+    data.value.title_ru = inputtitle_ru.value,
+    data.value.text_ru = inputtext_ru.value,
+    data.value.title_uz = inputtitle_uz.value,
+    data.value.text_uz = inputtext_uz.value,
+    data.value.title_tr = inputtitle_tr.value,
+    data.value.text_tr = inputtext_tr.value,
+    data.value.title_zh = inputtitle_zh.value,
+    data.value.text_zh = inputtext_zh.value,
+    data.value.author = inputauthor.value,
+    data.value.images =  imagerasm2.value
 }
 
-const editChangeProduct = async ()=>{
-
+const editChangeProduct = async () => {
+  onChange();
   const formData = new FormData();
   formData.append("title_en", data.value.title_en);
   formData.append("text_en", data.value.text_en);
@@ -164,32 +168,33 @@ const editChangeProduct = async ()=>{
   formData.append("title_zh", data.value.title_zh);
   formData.append("text_zh", data.value.text_zh);
   formData.append("author", data.value.author);
-  formData.append('images', data.value.images);
+  if(imagerasm2.value){
+  formData.append("images", imagerasm2.value);
+ }
   try {
-    await axiosCustom.put(`news/${idtovar.value}`,formData, {
-    });
+    await axiosCustom.put(`news/${idtovar.value}`, formData);
     toast.success("News is edited successfully", {
       autoClose: 2000,
       theme: "colored"
     });
-        fletchcard();
-        editmodal(false)
+    fletchcard();
+    editmodal(false);
   } catch (error) {
     toast.error(`Error: ${error}`, {
       autoClose: 2000,
       theme: "colored"
     });
   }
-}
+};
 
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~DELET Product~~~~~~~~~~~~~~~~~~~~~~~~
-const tovarid = (id) =>{
+const tovarid = (id) => {
   deletemodal(true)
   idtovar.value = id
 }
-const deleteProduct = async ()=>{
+const deleteProduct = async () => {
   try {
     await axiosCustom.delete(`news/${idtovar.value}`)
     toast.success("News is deleted successfully", {
@@ -198,8 +203,8 @@ const deleteProduct = async ()=>{
     });
     fletchcard();
     deletemodal(false)
-  } 
-  catch(error){
+  }
+  catch (error) {
     toast.error(`Error: ${error}`, {
       autoClose: 2000,
       theme: "colored"
@@ -221,7 +226,7 @@ const deleteProduct = async ()=>{
 // ~~~~~~~~~~~~~~~~table views~~~~~~~~~~~~~~~~
 const columns = [
   {
-    title:'№',
+    title: '№',
     dataIndex: '№',
   },
   {
@@ -245,12 +250,12 @@ const columns = [
     dataIndex: 'title_zh / text_zh',
   },
   {
-    title:'author',
-    dataIndex:'author',
+    title: 'author',
+    dataIndex: 'author',
   },
   {
-    title:'images',
-    dataIndex:'images',
+    title: 'images',
+    dataIndex: 'images',
   },
   {
     title: 'Action',
@@ -278,11 +283,11 @@ const columns = [
         </template>
       </template>
 
-      <template #bodyCell="{ column, record }">
+      <template #bodyCell="{ column, record, index }">
         <template v-if="column.dataIndex === '№'">
-          <span>{{ record.index }}</span> 
+          <span>{{ index +1 }}</span>
         </template>
-        
+
         <template v-else-if="column.dataIndex === 'title_en / text_en'">
           <div class="flexs">
             <span>{{ record.title_en }}</span>
@@ -313,13 +318,8 @@ const columns = [
             <span>{{ record.text_zh }}</span>
           </div>
         </template>
-        <template v-for="item in record?.news_images[0]" :key=item 
-        v-else-if="column.dataIndex === 'images'">
-          <img 
-          class="imagesWidth"
-               :src="'https://api.dezinfeksiyatashkent.uz/api/uploads/images/' + item " 
-               alt=""
-          />    
+        <template v-for="item in record?.news_images[0]" :key=item v-else-if="column.dataIndex === 'images'">
+          <img class="imagesWidth" :src="'https://api.dezinfeksiyatashkent.uz/api/uploads/images/' + item" alt="" />
         </template>
         <template v-else-if="column.dataIndex === 'author'">
           <span>{{ record.author }}</span>
@@ -349,22 +349,22 @@ const columns = [
       <a-form-item label="Text english" :rules="[{ required: true }]">
         <a-input v-model:value="text_en" placeholder="Text..." />
       </a-form-item>
-        <!-- ~~~~~~~~~~~~~~~~~~~russian~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <a-form-item label="Title russian" :rules="[{ required: true }]">
+      <!-- ~~~~~~~~~~~~~~~~~~~russian~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <a-form-item label="Title russian" :rules="[{ required: true }]">
         <a-input v-model:value="title_ru" placeholder="Название..." />
       </a-form-item>
       <a-form-item label="Text russian" :rules="[{ required: true }]">
         <a-input v-model:value="text_ru" placeholder="Текст..." />
       </a-form-item>
-        <!-- ~~~~~~~~~~~~~~~~~~~uzbek~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <a-form-item label="Title uzbek" :rules="[{ required: true }]">
+      <!-- ~~~~~~~~~~~~~~~~~~~uzbek~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <a-form-item label="Title uzbek" :rules="[{ required: true }]">
         <a-input v-model:value="title_uz" placeholder="Sarlavha..." />
       </a-form-item>
       <a-form-item label="Text uzbek" :rules="[{ required: true }]">
         <a-input v-model:value="text_uz" placeholder="Matn..." />
       </a-form-item>
-       <!-- ~~~~~~~~~~~~~~~~~~~China~~~~~~~~~~~~~~~~~~~~~~~ -->
-       <a-form-item label="Title China" :rules="[{ required: true }]">
+      <!-- ~~~~~~~~~~~~~~~~~~~China~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <a-form-item label="Title China" :rules="[{ required: true }]">
         <a-input v-model:value="title_zh" placeholder="标题..." />
       </a-form-item>
       <a-form-item label="Text China" :rules="[{ required: true }]">
@@ -382,48 +382,45 @@ const columns = [
         <a-input v-model:value="author" placeholder="Metin..." />
       </a-form-item>
       <!-- ~~~~~~~~~~~~~~~~~~~~~~~Images~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <a-form-item
-       label="Upload News images"
-      :rules="[{ required: true}]"
-    > 
-    <a-input 
-    type="file"
-    class="inputimg"
-     @input="imagePicture($event.target.files[0])" 
-     accept="image/*"
-     />
-    </a-form-item>
+      <a-form-item label="Upload News images" :rules="[{ required: true }]">
+        <a-input type="file" class="inputimg" @input="imagePicture($event.target.files[0])" accept="image/*" />
+      </a-form-item>
 
     </a-form>
   </a-modal>
 
+
+
+
+
+
   <!-- Modal EDIT-->
   <a-modal v-model:open="modaledit" title="Edit news" @ok="editChangeProduct">
 
-<a-form layout="vertical" style="margin-top: 20px;">
-     <!-- ~~~~~~~~~~~~~~~~~~~english~~~~~~~~~~~~~~~~~~~~~~~ -->
-     <a-form-item label="Title english" :rules="[{ required: true }]">
+    <a-form layout="vertical" style="margin-top: 20px;">
+      <!-- ~~~~~~~~~~~~~~~~~~~english~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <a-form-item label="Title english" :rules="[{ required: true }]">
         <a-input v-model:value="inputtitle_en" placeholder="Title..." />
       </a-form-item>
       <a-form-item label="Text english" :rules="[{ required: true }]">
         <a-input v-model:value="inputtext_en" placeholder="Text..." />
       </a-form-item>
-        <!-- ~~~~~~~~~~~~~~~~~~~russian~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <a-form-item label="Title russian" :rules="[{ required: true }]">
+      <!-- ~~~~~~~~~~~~~~~~~~~russian~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <a-form-item label="Title russian" :rules="[{ required: true }]">
         <a-input v-model:value="inputtitle_ru" placeholder="Название..." />
       </a-form-item>
       <a-form-item label="Text russian" :rules="[{ required: true }]">
         <a-input v-model:value="inputtext_ru" placeholder="Текст..." />
       </a-form-item>
-        <!-- ~~~~~~~~~~~~~~~~~~~uzbek~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <a-form-item label="Title uzbek" :rules="[{ required: true }]">
+      <!-- ~~~~~~~~~~~~~~~~~~~uzbek~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <a-form-item label="Title uzbek" :rules="[{ required: true }]">
         <a-input v-model:value="inputtitle_uz" placeholder="Sarlavha..." />
       </a-form-item>
       <a-form-item label="Text uzbek" :rules="[{ required: true }]">
         <a-input v-model:value="inputtext_uz" placeholder="Matn..." />
       </a-form-item>
-       <!-- ~~~~~~~~~~~~~~~~~~~China~~~~~~~~~~~~~~~~~~~~~~~ -->
-       <a-form-item label="Title China" :rules="[{ required: true }]">
+      <!-- ~~~~~~~~~~~~~~~~~~~China~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <a-form-item label="Title China" :rules="[{ required: true }]">
         <a-input v-model:value="inputtitle_zh" placeholder="标题..." />
       </a-form-item>
       <a-form-item label="Text China" :rules="[{ required: true }]">
@@ -436,42 +433,31 @@ const columns = [
       <a-form-item label="Text turkey" :rules="[{ required: true }]">
         <a-input v-model:value="inputtext_tr" placeholder="Metin..." />
       </a-form-item>
-         <!-- ~~~~~~~~~~~~~~~~~~~~~~Auhtor~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+      <!-- ~~~~~~~~~~~~~~~~~~~~~~Auhtor~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <a-form-item label="Text author" :rules="[{ required: true }]">
         <a-input v-model:value="inputauthor" placeholder="Metin..." />
       </a-form-item>
       <!-- ~~~~~~~~~~~~~~~~~~~~~~~Images~~~~~~~~~~~~~~~~~~~~~~~~ -->
-      <h1>{{  data.images }}</h1>
-      <a-form-item
-       label="Upload News images"
-      :rules="[{ required: true}]"
-    > 
-    <img class="imgedit"  :src="
-                    'https://api.dezinfeksiyatashkent.uz/api/uploads/images/' +
-                    data.images
-                  " alt="">
-    <a-input 
-    type="file"
-    class="inputimg"
-     @input="imagePicture($event.target.files[0])" 
-     accept="image/*"
-     />
-    </a-form-item>
+      <h1>{{ inputimages }}</h1>
+      <a-form-item label="Upload News images" :rules="[{ required: true }]">
+        <img class="imgedit" 
+        :src="'https://api.dezinfeksiyatashkent.uz/api/uploads/images/' +
+        data.images" alt="">
+        <a-input type="file" class="inputimg" @input="imagePicture2($event.target.files[0])" accept="image/*" />
+      </a-form-item>
 
 
-</a-form>
+    </a-form>
   </a-modal>
 
   <!-- Modal Delete-->
   <a-modal v-model:open="modaldelete" title="Delete news" @ok="deleteProduct">
     <h3 style="font-size: 22px;">Are you sure you want to delete </h3>
-   </a-modal>
+  </a-modal>
 
 
 
 
 </template>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

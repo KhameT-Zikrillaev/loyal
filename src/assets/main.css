@@ -31,3 +31,9 @@ h1{
     display: flex;
     gap: 10px;
   }
+  .ant-menu-item-active{
+color:red;
+  }
+  .ant-menu-item-selected{
+    background-color: rgba(240, 240, 240,0.5);
+  }
