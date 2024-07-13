@@ -99,7 +99,7 @@ const inputtext_uz = ref("");
 const inputtext_tr = ref("")
 const inputtext_zh = ref("")
 const inputauthor = ref("")
-const imagerasm2 = ref(null)
+const imagerasm2 = ref("")
 function imagePicture2(item) {
   imagerasm2.value = item;
 }
@@ -117,6 +117,7 @@ const data = ref(
     title_zh: "",
     text_zh: "",
     author: "",
+    images:null
   }
 );
 
@@ -135,6 +136,7 @@ const editProduct = (item) => {
     inputtext_zh.value = item.text_zh,
     inputauthor.value = item.author,
   onChange()
+  data.value.images = item.news_images[0]['image.src']
 }
 
 function onChange() {
@@ -148,8 +150,8 @@ function onChange() {
     data.value.text_tr = inputtext_tr.value,
     data.value.title_zh = inputtitle_zh.value,
     data.value.text_zh = inputtext_zh.value,
-    data.value.author = inputauthor.value
-
+    data.value.author = inputauthor.value,
+    data.value.images =  imagerasm2.value
 }
 
 const editChangeProduct = async () => {
@@ -167,9 +169,8 @@ const editChangeProduct = async () => {
   formData.append("text_zh", data.value.text_zh);
   formData.append("author", data.value.author);
   if(imagerasm2.value){
-    formData.append("images", imagerasm2.value)
-  }
-
+  formData.append("images", imagerasm2.value);
+ }
   try {
     await axiosCustom.put(`news/${idtovar.value}`, formData);
     toast.success("News is edited successfully", {
@@ -282,9 +283,9 @@ const columns = [
         </template>
       </template>
 
-      <template #bodyCell="{ column, record }">
+      <template #bodyCell="{ column, record, index }">
         <template v-if="column.dataIndex === '№'">
-          <span>{{ record.index }}</span>
+          <span>{{ index +1 }}</span>
         </template>
 
         <template v-else-if="column.dataIndex === 'title_en / text_en'">
@@ -439,9 +440,9 @@ const columns = [
       <!-- ~~~~~~~~~~~~~~~~~~~~~~~Images~~~~~~~~~~~~~~~~~~~~~~~~ -->
       <h1>{{ inputimages }}</h1>
       <a-form-item label="Upload News images" :rules="[{ required: true }]">
-        <img class="imgedit" :src="'https://api.dezinfeksiyatashkent.uz/api/uploads/images/' +
-      data.images
-      " alt="">
+        <img class="imgedit" 
+        :src="'https://api.dezinfeksiyatashkent.uz/api/uploads/images/' +
+        data.images" alt="">
         <a-input type="file" class="inputimg" @input="imagePicture2($event.target.files[0])" accept="image/*" />
       </a-form-item>
 
