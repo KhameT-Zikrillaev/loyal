@@ -20,16 +20,20 @@ function deletemodal(item) {
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~fetch products view~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 const products = ref([])
-async function fletchcard() {
+
+async function fetchCard() {
   try {
     const response = await axiosCustom.get('blogs/')
-    products.value = response.data?.data
-    console.log(response?.data?.data)
+    products.value = response.data?.data.map((record, index) => ({
+      ...record,
+      index: index + 1,
+    }))
   } catch (error) {
     console.error('Error fetching blogs:', error)
   }
 }
-fletchcard()
+fetchCard()
+
 //~~~~~~~~~~~IDTOVAR~~~//
 const idtovar = ref('')
 
@@ -60,8 +64,8 @@ const addProduct = async () => {
   formData.append('text_uz', text_uz.value)
   formData.append('title_tr', title_tr.value)
   formData.append('text_tr', text_tr.value)
-  formData.append('title_zh', text_zh.value)
-  formData.append('text_zh', title_zh.value)
+  formData.append('title_zh', title_zh.value)
+  formData.append('text_zh', text_zh.value)
   formData.append('author', author.value)
   formData.append('images', imagerasm.value)
   try {
@@ -72,7 +76,7 @@ const addProduct = async () => {
     })
     document.getElementById('myFormBlog').reset()
     addmodal(false)
-    fletchcard()
+    fetchCard()
   } catch (error) {
     toast.error(`Error: ${error}`, {
       autoClose: 2000,
@@ -84,39 +88,84 @@ const addProduct = async () => {
 
 //~~~~~~~~~~~~~~~~~~~~~ EDIT Product~~~~~~~~~~~~~~~~~~~~~~~~~
 
-const inputname = ref('')
-const inputdescription = ref('')
+const inputtitle_en = ref('')
+const inputtitle_ru = ref('')
+const inputtitle_uz = ref('')
+const inputtitle_tr = ref('')
+const inputtitle_zh = ref('')
+const inputtext_en = ref('')
+const inputtext_ru = ref('')
+const inputtext_uz = ref('')
+const inputtext_tr = ref('')
+const inputtext_zh = ref('')
+const inputauthor = ref('')
 
 const data = ref({
-  name: '',
-  description: '',
+  title_en: '',
+  title_ru: '',
+  title_uz: '',
+  title_tr: '',
+  title_zh: '',
+  text_en: '',
+  text_ru: '',
+  text_uz: '',
+  text_tr: '',
+  text_zh: '',
+  author: '',
 })
 
 const editProduct = (item) => {
   editmodal(true)
-  ;(idtovar.value = item.id),
-    (inputname.value = item.name),
-    (inputdescription.value = item.description),
-    onChange()
+  idtovar.value = item.id
+  inputtitle_en.value = item.title_en
+  inputtitle_ru.value = item.title_ru
+  inputtitle_uz.value = item.title_uz
+  inputtitle_tr.value = item.title_tr
+  inputtitle_zh.value = item.title_zh
+  inputtext_en.value = item.text_en
+  inputtext_ru.value = item.text_ru
+  inputtext_uz.value = item.text_uz
+  inputtext_tr.value = item.text_tr
+  inputtext_zh.value = item.text_zh
+  inputauthor.value = item.author
+  onChange()
 }
 
 function onChange() {
-  ;(data.value.name = inputname.value),
-    (data.value.description = inputdescription.value)
+  data.value.title_en = inputtitle_en.value
+  data.value.title_ru = inputtitle_ru.value
+  data.value.title_uz = inputtitle_uz.value
+  data.value.title_tr = inputtitle_tr.value
+  data.value.title_zh = inputtitle_zh.value
+  data.value.text_en = inputtext_en.value
+  data.value.text_ru = inputtext_ru.value
+  data.value.text_uz = inputtext_uz.value
+  data.value.text_tr = inputtext_tr.value
+  data.value.text_zh = inputtext_zh.value
+  data.value.author = inputauthor.value
 }
 
 const editChangeProduct = async () => {
   onChange()
   const formData = new FormData()
-  formData.append('name', data.value.name)
-  formData.append('description', data.value.description)
+  formData.append('title_en', data.value.title_en)
+  formData.append('title_ru', data.value.title_ru)
+  formData.append('title_uz', data.value.title_uz)
+  formData.append('title_tr', data.value.title_tr)
+  formData.append('title_zh', data.value.title_zh)
+  formData.append('text_en', data.value.text_en)
+  formData.append('text_ru', data.value.text_ru)
+  formData.append('text_uz', data.value.text_uz)
+  formData.append('text_tr', data.value.text_tr)
+  formData.append('text_zh', data.value.text_zh)
+  formData.append('author', data.value.author)
   try {
-    await axiosCustom.put(`blogs/${idtovar.value}`, formData, {})
+    await axiosCustom.put(`blogs/${idtovar.value}`, formData)
     toast.success('Blog is edited successfully', {
       autoClose: 2000,
       theme: 'colored',
     })
-    fletchcard()
+    fetchCard()
     editmodal(false)
   } catch (error) {
     toast.error(`Error: ${error}`, {
@@ -138,7 +187,7 @@ const deleteProduct = async () => {
       autoClose: 2000,
       theme: 'colored',
     })
-    fletchcard()
+    fetchCard()
     deletemodal(false)
   } catch (error) {
     toast.error(`Error: ${error}`, {
@@ -194,18 +243,19 @@ const columns = [
     dataIndex: 'text_zh',
   },
   {
-    title: 'Author',
+    title: 'author',
     dataIndex: 'author',
   },
   {
-    title: 'Images',
+    title: 'images',
     dataIndex: 'images',
   },
   {
-    title: 'Action',
+    title: 'action',
     dataIndex: 'action',
   },
 ]
+
 </script>
 
 <template>
@@ -229,7 +279,7 @@ const columns = [
           <span>{{ column.title }}</span>
         </template>
       </template>
-   
+
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === '№'">
           <span>{{ record.index }}</span>
@@ -265,9 +315,15 @@ const columns = [
             <span>{{ record.text_zh }}</span>
           </div>
         </template>
-        <template  v-else-if="column.dataIndex === 'images'">
-          <img class="imagesWidth" :src="'https://api.dezinfeksiyatashkent.uz/api/uploads/images/' + record?.blog_images[0]?.image?.src" alt="" />
-
+        <template v-else-if="column.dataIndex === 'images'">
+          <img
+            class="imagesWidth"
+            :src="
+              'https://api.dezinfeksiyatashkent.uz/api/uploads/images/' +
+              record?.blog_images[0]?.image?.src
+            "
+            alt=""
+          />
         </template>
         <template v-else-if="column.dataIndex === 'author'">
           <span>{{ record.author }}</span>
@@ -277,7 +333,12 @@ const columns = [
             <a-button type="primary" @click="editProduct(record)">
               Edit
             </a-button>
-            <a-button type="primary" danger style="margin-left: 15px;" @click="tovarid(record.id)">
+            <a-button
+              type="primary"
+              danger
+              style="margin-left: 15px"
+              @click="tovarid(record.id)"
+            >
               Delete
             </a-button>
           </div>
@@ -351,19 +412,83 @@ const columns = [
     @ok="editChangeProduct"
   >
     <a-form layout="vertical" style="margin-top: 20px">
-      <a-form-item label="Name" :rules="[{ required: true }]">
+      <a-form-item label="Title En" :rules="[{ required: true }]">
         <a-input
           type="text"
-          v-model:value="inputname"
-          placeholder="name....."
+          v-model:value="inputtitle_en"
+          placeholder="Title En....."
         />
       </a-form-item>
 
-      <a-form-item label="Text" :rules="[{ required: true }]">
+      <a-form-item label="Title Ru" :rules="[{ required: true }]">
         <a-input
           type="text"
-          v-model:value="inputdescription"
-          placeholder="text....."
+          v-model:value="inputtitle_ru"
+          placeholder="Title Ru....."
+        />
+      </a-form-item>
+
+      <a-form-item label="Title Uz" :rules="[{ required: true }]">
+        <a-input
+          type="text"
+          v-model:value="inputtitle_uz"
+          placeholder="Title Uz....."
+        />
+      </a-form-item>
+
+      <a-form-item label="Title Tr" :rules="[{ required: true }]">
+        <a-input
+          type="text"
+          v-model:value="inputtitle_tr"
+          placeholder="Title Tr....."
+        />
+      </a-form-item>
+
+      <a-form-item label="Title Zh" :rules="[{ required: true }]">
+        <a-input
+          type="text"
+          v-model:value="inputtitle_zh"
+          placeholder="Title Zh....."
+        />
+      </a-form-item>
+
+      <a-form-item label="Text En" :rules="[{ required: true }]">
+        <a-input
+          type="text"
+          v-model:value="inputtext_en"
+          placeholder="Text En....."
+        />
+      </a-form-item>
+
+      <a-form-item label="Text Ru" :rules="[{ required: true }]">
+        <a-input
+          type="text"
+          v-model:value="inputtext_ru"
+          placeholder="Text Ru....."
+        />
+      </a-form-item>
+
+      <a-form-item label="Text Uz" :rules="[{ required: true }]">
+        <a-input
+          type="text"
+          v-model:value="inputtext_uz"
+          placeholder="Text Uz....."
+        />
+      </a-form-item>
+
+      <a-form-item label="Text Tr" :rules="[{ required: true }]">
+        <a-input
+          type="text"
+          v-model:value="inputtext_tr"
+          placeholder="Text Tr....."
+        />
+      </a-form-item>
+
+      <a-form-item label="Text Zh" :rules="[{ required: true }]">
+        <a-input
+          type="text"
+          v-model:value="inputtext_zh"
+          placeholder="Text Zh....."
         />
       </a-form-item>
     </a-form>
